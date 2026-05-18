@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="2"/>
+  
+  <!-- Wallet body -->
+  <rect x="55" y="75" width="90" height="60" rx="8" fill="#DCFCE7" stroke="#4ADE80" stroke-width="2"/>
+  
+  <!-- Wallet flap -->
+  <path d="M55 90 L55 80 Q55 72 63 72 L137 72 Q145 72 145 80 L145 90" fill="#BBF7D0" stroke="#4ADE80" stroke-width="2"/>
+  
+  <!-- Wallet clasp -->
+  <rect x="120" y="95" width="25" height="16" rx="4" fill="#86EFAC" stroke="#4ADE80" stroke-width="1.5"/>
+  <circle cx="133" cy="103" r="3" fill="#22C55E"/>
+  
+  <!-- Card slots -->
+  <line x1="70" y1="100" x2="105" y2="100" stroke="#4ADE80" stroke-width="1" opacity="0.5"/>
+  <line x1="70" y1="110" x2="100" y2="110" stroke="#4ADE80" stroke-width="1" opacity="0.5"/>
+  <line x1="70" y1="120" x2="95" y2="120" stroke="#4ADE80" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Coin 1 -->
+  <g transform="translate(70, 60)">
+    <circle cx="0" cy="0" r="14" fill="#86EFAC" stroke="#4ADE80" stroke-width="2"/>
+    <text x="0" y="4" font-family="Arial" font-size="12" font-weight="700" fill="#16A34A" text-anchor="middle">₹</text>
+  </g>
+  
+  <!-- Coin 2 -->
+  <g transform="translate(95, 52)">
+    <circle cx="0" cy="0" r="11" fill="#BBF7D0" stroke="#4ADE80" stroke-width="1.5"/>
+    <text x="0" y="3.5" font-family="Arial" font-size="9" font-weight="700" fill="#22C55E" text-anchor="middle">₹</text>
+  </g>
+  
+  <!-- Coin 3 -->
+  <g transform="translate(115, 58)">
+    <circle cx="0" cy="0" r="9" fill="#DCFCE7" stroke="#4ADE80" stroke-width="1.5"/>
+    <text x="0" y="3" font-family="Arial" font-size="7" font-weight="700" fill="#4ADE80" text-anchor="middle">₹</text>
+  </g>
+  
+  <!-- Decorative sparkles -->
+  <g transform="translate(148, 65)" fill="#22C55E" opacity="0.6">
+    <path d="M0 -4 L1 -1 L4 0 L1 1 L0 4 L-1 1 L-4 0 L-1 -1 Z"/>
+  </g>
+  <g transform="translate(45, 80)" fill="#4ADE80" opacity="0.4">
+    <path d="M0 -3 L0.75 -0.75 L3 0 L0.75 0.75 L0 3 L-0.75 0.75 L-3 0 L-0.75 -0.75 Z"/>
+  </g>
+</svg>

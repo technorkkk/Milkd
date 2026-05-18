@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  password  String
+  business  Business?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Business {
+  id        String      @id @default(cuid())
+  userId    String      @unique
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String?
+  address   String?
+  customers Customer[]
+  milkPrice MilkPrice[]
+  settings  Settings?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Customer {
+  id          String          @id @default(cuid())
+  businessId  String
+  business    Business        @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name        String
+  phone       String?
+  address     String?
+  milkType    String          @default("COW")
+  dailyLimit  Float           @default(0)
+  deliveries  DailyDelivery[]
+  payments    Payment[]
+  invoices    Invoice[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([businessId])
+}
+
+model DailyDelivery {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  date       String
+  shift      String   @default("MORNING")
+  liters     Float
+  rate       Float
+  amount     Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([customerId, date, shift])
+  @@index([customerId])
+  @@index([date])
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  amount     Float
+  date       String
+  method     String   @default("CASH")
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([date])
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  month       Int
+  year        Int
+  totalLiters Float
+  totalAmount Float
+  paidAmount  Float    @default(0)
+  balance     Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([customerId, month, year])
+  @@index([customerId])
+}
+
+model MilkPrice {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  type       String
+  price      Float
+  updatedAt  DateTime @updatedAt
+
+  @@unique([type])
+  @@index([businessId])
+}
+
+model Settings {
+  id              String   @id @default(cuid())
+  businessId      String   @unique
+  business        Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  darkMode        Boolean  @default(false)
+  retentionMonths Int      @default(5)
+  currency        String   @default("INR")
+  updatedAt       DateTime @updatedAt
+}
