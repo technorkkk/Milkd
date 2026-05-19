@@ -3,6 +3,7 @@ import { Poppins, Inter, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
 import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
+import { ThemeSync } from '@/components/theme-sync'
 import './globals.css'
 
 const poppins = Poppins({
@@ -70,10 +71,12 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="system"
           enableSystem
+          storageKey="milk-dairy-theme"
           disableTransitionOnChange={false}
         >
+          <ThemeSync />
           {children}
           <Toaster position="top-center" richColors />
           <PwaInstallPrompt />

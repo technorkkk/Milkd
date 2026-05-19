@@ -146,7 +146,7 @@ export default function SettingsPage() {
     loadBusiness()
   }, [])
 
-  // Sync dark mode with theme
+  // Sync dark mode with theme + persist to database
   useEffect(() => {
     setIsDark(theme === 'dark')
   }, [theme])
@@ -165,7 +165,11 @@ export default function SettingsPage() {
   const handleDarkModeToggle = useCallback((checked: boolean) => {
     setIsDark(checked)
     setTheme(checked ? 'dark' : 'light')
-  }, [setTheme])
+    // Persist to database
+    updateSettings({ darkMode: checked }).catch((err) => {
+      console.error('Failed to save dark mode setting:', err)
+    })
+  }, [setTheme, updateSettings])
 
   // Save business info
   const handleSaveBusiness = useCallback(async () => {

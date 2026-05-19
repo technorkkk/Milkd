@@ -104,6 +104,7 @@ model MilkPrice {
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
   type       String
   price      Float
+  createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@unique([type])
@@ -117,5 +118,6 @@ model Settings {
   darkMode        Boolean  @default(false)
   retentionMonths Int      @default(5)
   currency        String   @default("INR")
+  createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

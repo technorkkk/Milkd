@@ -9,6 +9,7 @@ import {
   Moon,
   Trash2,
   Calendar,
+  RefreshCw,
 } from 'lucide-react'
 import { useDairyStore, type Delivery } from '@/lib/store'
 import { Button } from '@/components/ui/button'
@@ -286,10 +287,24 @@ export default function DeliveriesPage() {
   // Customer search for filter
   const [customerSearch, setCustomerSearch] = useState('')
 
-  // Fetch data on mount
+  // Fetch data on mount with retry logic
   useEffect(() => {
-    fetchCustomers()
-    fetchMilkPrices()
+    const loadData = async () => {
+      try {
+        await Promise.all([fetchCustomers(), fetchMilkPrices()])
+      } catch (error) {
+        console.error('Initial data fetch failed, retrying...', error)
+        // Retry after a short delay (ensureBusiness may need to create records first)
+        setTimeout(async () => {
+          try {
+            await Promise.all([fetchCustomers(), fetchMilkPrices()])
+          } catch (retryError) {
+            console.error('Retry also failed:', retryError)
+          }
+        }, 1000)
+      }
+    }
+    loadData()
   }, [fetchCustomers, fetchMilkPrices])
 
   // Fetch deliveries when filters change
@@ -497,6 +512,9 @@ export default function DeliveriesPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Customers</SelectItem>
+              {filteredCustomers.length === 0 && customers.length > 0 && (
+                <SelectItem value="__none" disabled>No match found</SelectItem>
+              )}
               {filteredCustomers.map((c) => (
                 <SelectItem key={c.id} value={c.id}>
                   {c.name} ({c.milkType})
@@ -542,18 +560,27 @@ export default function DeliveriesPage() {
             {/* Customer Select */}
             <div className="flex flex-col gap-2">
               <Label>Customer *</Label>
-              <Select value={formCustomerId} onValueChange={setFormCustomerId}>
-                <SelectTrigger className="rounded-lg w-full">
-                  <SelectValue placeholder="Select customer" />
-                </SelectTrigger>
-                <SelectContent>
-                  {customers.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name} ({c.milkType})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {customers.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border p-4 text-center">
+                  <p className="text-sm text-muted-foreground">No customers found</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Add customers first from the Customers page
+                  </p>
+                </div>
+              ) : (
+                <Select value={formCustomerId} onValueChange={setFormCustomerId}>
+                  <SelectTrigger className="rounded-lg w-full">
+                    <SelectValue placeholder="Select customer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {customers.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name} ({c.milkType})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             {/* Date Input */}

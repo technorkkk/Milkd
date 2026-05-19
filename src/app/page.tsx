@@ -14,6 +14,7 @@ import {
 import { format } from 'date-fns'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { BottomNavigation, NavSpacer } from '@/components/navigation'
 import { useDairyStore, type DeliveryItem } from '@/lib/store'
@@ -369,7 +370,7 @@ export default function Home() {
   const today = new Date()
   const dateLabel = format(today, 'EEE, dd MMM')
 
-  if (!dashboard) {
+  if (!dashboard && loadingDashboard) {
     return (
       <>
         <DashboardSkeleton />
@@ -378,7 +379,33 @@ export default function Home() {
     )
   }
 
-  const d = dashboard
+  // Dashboard failed to load - show retry UI
+  if (!dashboard && !loadingDashboard) {
+    return (
+      <>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+          <div className="mb-4 flex size-20 items-center justify-center rounded-full bg-secondary">
+            <Droplets className="size-8 text-muted-foreground" />
+          </div>
+          <h3 className="font-heading text-lg font-semibold text-foreground">
+            Could not load dashboard
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground max-w-[260px] text-center">
+            Something went wrong. Please try again.
+          </p>
+          <Button
+            onClick={() => fetchDashboard()}
+            className="mt-4 rounded-btn gap-2"
+          >
+            Retry
+          </Button>
+        </div>
+        <BottomNavigation />
+      </>
+    )
+  }
+
+  const d = dashboard!
 
   const outstandingPositive = d.totalOutstanding > 0
 

@@ -553,18 +553,27 @@ export default function PaymentsPage() {
             {/* Customer Select */}
             <div className="flex flex-col gap-2">
               <Label>Customer *</Label>
-              <Select value={formCustomerId} onValueChange={setFormCustomerId}>
-                <SelectTrigger className="rounded-lg w-full">
-                  <SelectValue placeholder="Select customer" />
-                </SelectTrigger>
-                <SelectContent>
-                  {customers.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name} — {formatIndianCurrency(Math.abs(c.balance))} {c.balance > 0 ? 'due' : 'advance'}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {customers.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border p-4 text-center">
+                  <p className="text-sm text-muted-foreground">No customers found</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Add customers first from the Customers page
+                  </p>
+                </div>
+              ) : (
+                <Select value={formCustomerId} onValueChange={setFormCustomerId}>
+                  <SelectTrigger className="rounded-lg w-full">
+                    <SelectValue placeholder="Select customer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {customers.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name} — {formatIndianCurrency(Math.abs(c.balance))} {c.balance > 0 ? 'due' : 'advance'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             {/* Amount Input */}

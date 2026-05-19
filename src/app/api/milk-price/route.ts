@@ -1,6 +1,24 @@
 import { db, ensureBusiness } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
+function serializeMilkPrice(mp: {
+  id: string
+  businessId: string
+  type: string
+  price: number
+  createdAt: Date
+  updatedAt: Date
+}) {
+  return {
+    id: mp.id,
+    businessId: mp.businessId,
+    type: mp.type,
+    price: mp.price,
+    createdAt: mp.createdAt.toISOString(),
+    updatedAt: mp.updatedAt.toISOString(),
+  }
+}
+
 export async function GET() {
   try {
     const business = await ensureBusiness()
@@ -9,7 +27,7 @@ export async function GET() {
       where: { businessId: business.id },
     })
 
-    return NextResponse.json(milkPrices)
+    return NextResponse.json(milkPrices.map(serializeMilkPrice))
   } catch (error) {
     console.error('Get milk prices error:', error)
     return NextResponse.json(
@@ -47,7 +65,7 @@ export async function PUT(request: NextRequest) {
       )
     )
 
-    return NextResponse.json(results)
+    return NextResponse.json(results.map(serializeMilkPrice))
   } catch (error) {
     console.error('Update milk prices error:', error)
     return NextResponse.json(
