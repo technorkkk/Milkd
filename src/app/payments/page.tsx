@@ -295,6 +295,13 @@ export default function PaymentsPage() {
     fetchCustomers()
   }, [fetchCustomers])
 
+  // Re-fetch customers when the add-payment sheet opens
+  useEffect(() => {
+    if (sheetOpen) {
+      fetchCustomers()
+    }
+  }, [sheetOpen, fetchCustomers])
+
   // Fetch payments when filters change
   useEffect(() => {
     fetchPayments()

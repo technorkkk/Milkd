@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
   try {
+    // Ensure business exists before querying (handles fresh DB)
+    await ensureBusiness()
+
     const customers = await db.customer.findMany({
       orderBy: { name: 'asc' },
       include: {

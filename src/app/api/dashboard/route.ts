@@ -1,8 +1,11 @@
-import { db } from '@/lib/db'
+import { db, ensureBusiness } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
+    // Ensure business exists before querying (handles fresh DB)
+    await ensureBusiness()
+
     const today = new Date().toISOString().split('T')[0]
 
     // Today's deliveries

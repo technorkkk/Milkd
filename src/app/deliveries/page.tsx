@@ -287,25 +287,19 @@ export default function DeliveriesPage() {
   // Customer search for filter
   const [customerSearch, setCustomerSearch] = useState('')
 
-  // Fetch data on mount with retry logic
+  // Fetch data on mount
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        await Promise.all([fetchCustomers(), fetchMilkPrices()])
-      } catch (error) {
-        console.error('Initial data fetch failed, retrying...', error)
-        // Retry after a short delay (ensureBusiness may need to create records first)
-        setTimeout(async () => {
-          try {
-            await Promise.all([fetchCustomers(), fetchMilkPrices()])
-          } catch (retryError) {
-            console.error('Retry also failed:', retryError)
-          }
-        }, 1000)
-      }
-    }
-    loadData()
+    fetchCustomers()
+    fetchMilkPrices()
   }, [fetchCustomers, fetchMilkPrices])
+
+  // Re-fetch customers when the add-delivery sheet opens
+  useEffect(() => {
+    if (sheetOpen) {
+      fetchCustomers()
+      fetchMilkPrices()
+    }
+  }, [sheetOpen, fetchCustomers, fetchMilkPrices])
 
   // Fetch deliveries when filters change
   useEffect(() => {

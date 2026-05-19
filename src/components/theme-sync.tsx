@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { useDairyStore } from '@/lib/store'
 
@@ -13,24 +13,33 @@ import { useDairyStore } from '@/lib/store'
 export function ThemeSync() {
   const { theme, setTheme } = useTheme()
   const { settings, fetchSettings } = useDairyStore()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     fetchSettings()
   }, [fetchSettings])
 
   useEffect(() => {
-    if (settings && typeof window !== 'undefined') {
-      // Check if user has a stored preference in localStorage
+    if (!mounted || !settings) return
+
+    // Only apply DB theme if there's no localStorage preference
+    try {
       const stored = localStorage.getItem('milk-dairy-theme')
       if (!stored) {
-        // No local preference, use database setting
         const dbTheme = settings.darkMode ? 'dark' : 'light'
         if (theme !== dbTheme) {
           setTheme(dbTheme)
         }
       }
+    } catch {
+      // localStorage may not be available
+      const dbTheme = settings.darkMode ? 'dark' : 'light'
+      if (theme !== dbTheme) {
+        setTheme(dbTheme)
+      }
     }
-  }, [settings, theme, setTheme])
+  }, [mounted, settings, theme, setTheme])
 
   return null
 }

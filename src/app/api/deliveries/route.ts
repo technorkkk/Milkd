@@ -1,4 +1,4 @@
-import { db } from '@/lib/db'
+import { db, ensureBusiness } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 
@@ -72,9 +72,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get milk price for the customer's milk type
-    const milkPrice = await db.milkPrice.findUnique({
-      where: { type: customer.milkType },
+    // Get milk price for the customer's milk type (filter by businessId too)
+    const business = await ensureBusiness()
+    const milkPrice = await db.milkPrice.findFirst({
+      where: { type: customer.milkType, businessId: business.id },
     })
 
     if (!milkPrice) {
